@@ -3,7 +3,7 @@ import Chart from 'chart.js/auto';
 
 const OrderBook = () => {
   const chartRef = useRef(null);
-  let orderBookChart = null; // Declare a variable to hold the chart instance
+  const orderBookChartRef = useRef(null); // Use useRef to store the chart instance
 
   useEffect(() => {
     // Binance.US config
@@ -23,10 +23,10 @@ const OrderBook = () => {
 
     // Initial chart creation
     const ctx = chartRef.current.getContext("2d");
-    if (orderBookChart) {
-      orderBookChart.destroy(); // Destroy the existing chart if it exists
+    if (orderBookChartRef.current) {
+      orderBookChartRef.current.destroy(); // Destroy the existing chart if it exists
     }
-    orderBookChart = new Chart(ctx, {
+    orderBookChartRef.current = new Chart(ctx, {
       type: "bar",
       data: {
         labels: [],
@@ -116,18 +116,18 @@ const OrderBook = () => {
         ).reverse();
 
         // Update the chart data
-        orderBookChart.data.labels = [...askPrices, ...bidPrices];
-        orderBookChart.data.datasets[0].data = [
+        orderBookChartRef.current.data.labels = [...askPrices, ...bidPrices];
+        orderBookChartRef.current.data.datasets[0].data = [
           ...askSizes,
           ...new Array(bids.length).fill(0),
         ];
-        orderBookChart.data.datasets[1].data = [
+        orderBookChartRef.current.data.datasets[1].data = [
           ...new Array(asks.length).fill(0),
           ...bidSizes,
         ];
 
         // Refresh the chart
-        orderBookChart.update();
+        orderBookChartRef.current.update();
       }
 
       function mergeData(wsData) {
